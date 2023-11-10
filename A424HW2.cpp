@@ -101,8 +101,8 @@ public:
 		return at_SCE;
 	}
 	// set functions
-	void setvel(double& vel) {
-		vel = vel;
+	void setvel(const double& v_mph) {
+		vel = v_mph;
 
 	}
 	void setloiter_time(double& loiter_time) {
@@ -118,7 +118,7 @@ public:
 		}
 	}
 	virtual double time_on_ground() {
-
+		return wait_time;
 	}
 	virtual string plane_type() {
 		return "GA";
@@ -175,7 +175,6 @@ public:
 int main()
 {
 	//instantiating objects
-
 	Airliner AA1{"AA", "SCE", "PHL"};
 	Airliner UA1("UA", "SCE", "ORD");
 	Airliner UA2("UA", "SCE", "EWR");
@@ -184,7 +183,41 @@ int main()
 	GeneralAviation GA2("SCE", "EWR");
 	GeneralAviation GA3("SCE", "ORD");
 
+	// assigning velocities
+	AA1.setvel(470 );
+	UA1.setvel(515 );
+	UA2.setvel(480 );
+	AA2.setvel(500 );
+	GA1.setvel(140 );
+	GA2.setvel(160 );
+	GA3.setvel(180 );
 
-	return 0;
+	//test time yay!
+	//timestep
+	double dt = 100;
+	int i = 0;
+
+			while (i<10) {
+				//calling operate function for each plane
+				AA1.operate(dt);
+				UA1.operate(dt);
+				UA2.operate(dt);
+				AA2.operate(dt);
+				GA1.operate(dt);
+				GA2.operate(dt);
+				GA3.operate(dt);
+
+				//displaying each position
+				cout << "AA1 Position: " << AA1.getpos() << endl;
+				cout << "UA1 Position: " << UA1.getpos() << endl;
+				cout << "UA2 Position: " << UA2.getpos() << endl;
+				cout << "AA2 Position: " << AA2.getpos() << endl;
+				cout << "GA1 Position: " << GA1.getpos() << endl;
+				cout << "GA2 Position: " << GA2.getpos() << endl;
+				cout << "GA3 Position: " << GA3.getpos() << endl;
+				i++;
+			}
+			return 0;
+		
 }
 
