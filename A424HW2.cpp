@@ -36,7 +36,7 @@ private:
 	Flightdistances flightdistances;
 public:
 	//constructor
-	 Plane(string& from, string& to) :
+	 Plane(const string& from, const string& to) :
 		 // storing inputs and initializing vars
 		origin(from),
 		destination(to),
@@ -107,7 +107,9 @@ public:
 	}
 	void setloiter_time(double& loiter_time) {
 		loiter_time = loiter_time;
-		
+		if (loiter_time < 0) {
+			loiter_time = 0;
+		}
 	}
 	// uhhhh
 	double distance_to_SCE() {
@@ -134,15 +136,18 @@ class Airliner : public Plane {
 private:
 	string Airline;
 public:
-	Airliner(string& Airline, string& from, string& to) :
+	//constructor
+	Airliner(const string & Airline,const string& from, const string& to) :
 		Airline(Airline),
 		Plane(from,to)
 	{}
+	//deconstructor
 	~Airliner() {}
 	//overriding plane type
 	string plane_type() override {
 		return Airline;
 	}
+	//randomizing time on ground
 	double time_on_ground() override {
 		double m = 1800;
 		double sd = 600;
@@ -152,15 +157,34 @@ public:
 };
 
 class GeneralAviation : public Plane {
-private:
-
 public:
-
+	//constructor
+	GeneralAviation(const string& from, const string& to) :
+		Plane(from, to)
+	{}
+	//deconstructor
+	~GeneralAviation() {}
+	//randomizing time on ground
+	double time_on_ground() override {
+		double m = 600;
+		double sd = 60;
+		wait_time = draw_from_normal_dist(m, sd);
+		return wait_time;
+	}
 };
 int main()
 {
-	Flightdistances flightdistances;
-	cout << " Distance from SCE to PHL : " << flightdistances.distances["SCE"]["PHL"] << endl;
+	//instantiating objects
+
+	Airliner AA1{"AA", "SCE", "PHL"};
+	Airliner UA1("UA", "SCE", "ORD");
+	Airliner UA2("UA", "SCE", "EWR");
+	Airliner AA2("AA", "SCE", "ORD");
+	GeneralAviation GA1 ("SCE", "PHL");
+	GeneralAviation GA2("SCE", "EWR");
+	GeneralAviation GA3("SCE", "ORD");
+
 
 	return 0;
 }
+
