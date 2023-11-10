@@ -50,6 +50,9 @@ public:
 
 	}
 	//virtual deconstructor
+	virtual ~Plane() {
+		
+	}
 	//operate function
 	void operate(double& dt) {
 		if (loiter_time != 0) {
@@ -70,9 +73,13 @@ public:
 			return;
 		}
 		if (destination == "SCE") {
-
-			return;
+			at_SCE = 1;
 		}
+		time_on_ground();
+			//swap origin and destination
+		std:: swap(origin, destination);
+		pos = 0.0;
+		return;
 	}
 	//get fucntions
 	double getpos() {
@@ -102,23 +109,53 @@ public:
 		loiter_time = loiter_time;
 		
 	}
-	//
+	// uhhhh
 	double distance_to_SCE() {
-		return 0;
+		if (destination == "SCE") {
+			return distance - pos;
+		}
 	}
 	virtual double time_on_ground() {
 
 	}
 	virtual string plane_type() {
-	
+		return "GA";
 	}
-	static double draw_from_normal_dist(double& mean, double& sigma) {
-		//seed to ensure random number is different each time
-		unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-		default_random_engine generator(seed);
-		normal_distribution<double> distribution(mean, sigma);
-		return distribution(generator);
+	static double draw_from_normal_dist(double& m, double& sd) {
+		std::random_device rd{};
+		std::mt19937 gen{ rd() };
+		std::normal_distribution<> d{ m, sd };
+		return d(gen);
 	}
+};
+
+//question 4 derived classes airliner and generaviation
+class Airliner : public Plane {
+private:
+	string Airline;
+public:
+	Airliner(string& Airline, string& from, string& to) :
+		Airline(Airline),
+		Plane(from,to)
+	{}
+	~Airliner() {}
+	//overriding plane type
+	string plane_type() override {
+		return Airline;
+	}
+	double time_on_ground() override {
+		double m = 1800;
+		double sd = 600;
+		wait_time= draw_from_normal_dist(m, sd);
+		return wait_time;
+	}
+};
+
+class GeneralAviation : public Plane {
+private:
+
+public:
+
 };
 int main()
 {
